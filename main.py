@@ -106,7 +106,9 @@ class DeepDipRider:
             if self.bar_index < self.cool_until:
                 return []
             if close * 10000 < average * (10000 - DIP_BPS):
-                notional = state.cash * FIRST_LEG_BPS // 10000
+                # Never spend more than the harness's weight room allows.
+                room = state.weight_room(SYMBOL)
+                notional = min(state.cash * FIRST_LEG_BPS // 10000, room)
                 if notional >= MIN_CASH_UNITS:
                     self.legs = 1
                     return [{
